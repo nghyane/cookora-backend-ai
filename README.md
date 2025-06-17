@@ -142,4 +142,9 @@
 
 ---
 
-*Table format for easy tracking and daily progress monitoring!* 
+🔄 Roadmap sau MVP (Phase 2):
+- User System - Authentication & profiles
+- Personalization - Preferences & history
+- Social Features - Ratings, favorites, sharing
+- Advanced Features - Better filtering, recommendations
+- Content Management - Admin tools, user-generated content
