@@ -1,155 +1,103 @@
-# Cookora App – Product Specification (v1)
 
-**Mục tiêu:**  
-Ứng dụng giúp người dùng nấu ăn thông minh hơn thông qua việc gợi ý món ăn từ nguyên liệu sẵn có, tích hợp cộng đồng yêu bếp, cá nhân hóa dinh dưỡng và hệ thống phần thưởng.
-
-**Ngày cập nhật:** 2025-06-19  
-**Tác giả:** Nghia Hoang
+> Tài liệu đặc tả chức năng tổng quan cho backend/frontend/product.  
+> Mục tiêu: ưu tiên triển khai theo hành vi người dùng, module chức năng rõ ràng, dễ mở rộng.
 
 ---
 
-## 📚 Mục lục
+## 🔰 1. Phân tầng người dùng & quyền hạn (User Tier & Access Control)
 
-1. [Giới thiệu & Tầm nhìn](#1-giới-thiệu--tầm-nhìn)
-2. [Tính năng chính của App](#2-tính-năng-chính-của-app)
-3. [Hành trình người dùng (User Flows)](#3-hành-trình-người-dùng-user-flows)
-4. [Tính năng Website](#4-tính-năng-website)
-5. [Quản trị & Nội dung](#5-quản-trị--nội-dung)
-6. [Lộ trình phát triển (Roadmap)](#6-lộ-trình-phát-triển-roadmap)
-7. [Phân loại tính năng theo giai đoạn](#7-phân-loại-tính-năng-theo-giai-đoạn)
-8. [Thuật ngữ (Glossary)](#8-thuật-ngữ-glossary)
-9. [Phụ lục](#9-phụ-lục)
+| Cấp người dùng      | Mô tả                           | Quyền hạn chính                                                |
+|---------------------|----------------------------------|----------------------------------------------------------------|
+| Guest               | Người mới, chưa đăng nhập        | Dùng thử scan & tìm kiếm, không xem chi tiết công thức         |
+| Free Member         | Đã đăng ký tài khoản             | Xem công thức đầy đủ, đăng bài, lưu món, tích điểm             |
+| Premium Plus        | Trả phí gói cá nhân              | Bộ lọc nâng cao, không quảng cáo, cảnh báo dị ứng              |
+| Premium Pro         | Trả phí gói chuyên gia           | Thực đơn AI, danh sách đi chợ, nội dung độc quyền              |
+| Admin / Editor      | Kiểm duyệt & quản lý nội dung    | Duyệt công thức, viết blog, quản lý user                       |
 
 ---
 
-## 1. Giới thiệu & Tầm nhìn
+## 📲 2. Module tính năng theo mức độ ưu tiên
 
-Cookora là nền tảng nấu ăn giúp người dùng dễ dàng sử dụng các nguyên liệu sẵn có để tạo nên những bữa ăn ngon, khoa học và cá nhân hoá.
+### 2.1. Tài khoản & Phân quyền
+- Đăng ký / đăng nhập (email, Google, Facebook)
+- Cập nhật hồ sơ
+- Phân quyền theo RBAC
 
-### USP (Unique Selling Point):
+### 2.2. Công thức & Tìm kiếm
+- CRUD công thức
+- Tìm kiếm theo tên món / nguyên liệu
+- Bộ lọc cơ bản (Free), nâng cao (Premium)
+- Giao diện kết quả dạng card
 
-- Scan ảnh nguyên liệu → gợi ý món ăn tức thì
-- Công thức được kiểm chứng, chuyên sâu
-- Hệ thống cộng đồng + gamification tích điểm 💎
+### 2.3. Quét nguyên liệu (Scan AI)
+- Mở camera → nhận diện AI
+- Trả danh sách nguyên liệu
+- Gợi ý món phù hợp
 
-### Persona:
+### 2.4. Hệ thống Điểm thưởng (💎 Rewards)
+- Cộng/trừ điểm theo hành vi
+- Lịch sử giao dịch
+- Đổi điểm lấy tính năng / quà
 
-- Sinh viên / người đi làm bận rộn
-- Người theo chế độ Eat Clean, dị ứng
-- Mẹ bỉm sữa hoặc người nội trợ sáng tạo
+### 2.5. Cộng đồng
+- Feed bài đăng (ảnh + caption)
+- Like / Comment / Lưu
+- Đăng công thức chi tiết (duyệt)
 
----
+### 2.6. Trang cá nhân
+- Thông tin cơ bản, ảnh đại diện
+- Công thức đã lưu, bài viết, thực đơn
+- Điểm thưởng & hoạt động
 
-## 2. Tính năng chính của App
-
-Ứng dụng được chia thành 5 tab chức năng chính:
-
-### 2.1 Trang chủ (Home)
-- Gợi ý món ăn hôm nay
-- Banner sự kiện, công thức trending
-- Bộ sưu tập theo mùa/lễ
-
-### 2.2 Tìm kiếm (Search)
-- Tìm món ăn theo từ khóa, nguyên liệu
-- Bộ lọc cơ bản (mặn/ngọt, thời gian nấu)
-- Bộ lọc nâng cao (Pro): calories, chế độ ăn
-
-### 2.3 Scan nguyên liệu
-- Mở camera → chụp ảnh
-- GPT-4o nhận diện nguyên liệu chính (trứng, thịt, rau…)
-- Trả về danh sách món có thể nấu
-
-### 2.4 Cộng đồng (Community)
-- Đăng bài, hình ảnh, caption
-- Tương tác: like, bình luận
-- Gamification: tích điểm 💎
-
-### 2.5 Cá nhân (Profile)
-- Quản lý công thức yêu thích
-- Thực đơn cá nhân (Pro)
-- Quản lý điểm 💎, nâng cấp gói
+### 2.7. Kế hoạch ăn uống AI (Pro)
+- Khai báo mục tiêu cá nhân
+- AI tạo thực đơn tuần/tháng
+- Tự động tạo danh sách đi chợ
 
 ---
 
-## 3. Hành trình người dùng (User Flows)
+## 🌐 3. Website (SEO + Cộng đồng)
 
-Chi tiết các hành vi chính từ lúc người dùng mở app đến lúc tương tác nâng cao.
+### 3.1. SEO Recipe Page
+- Index công thức, tối ưu đọc
+- CTA tải app hoặc đăng ký
 
-### 3.1 Guest Mode
-- Trải nghiệm thử Scan và Tìm kiếm
-- Xem công thức bị làm mờ phần nguyên liệu / cách nấu
-- CTA mời đăng ký để mở khoá
+### 3.2. Feed cộng đồng
+- Đăng nhập để tương tác
+- Giao diện bài viết giống social
 
-### 3.2 Member Free
-- Truy cập toàn bộ công thức cơ bản
-- Lưu công thức, tạo bài viết, tích điểm
-- Gặp tường phí khi lọc nâng cao → CTA nâng cấp
-
-### 3.3 Member Premium (Plus / Pro)
-- Plus: mở tất cả bộ lọc, không quảng cáo, cảnh báo dị ứng
-- Pro: tạo thực đơn AI + danh sách đi chợ + nội dung độc quyền
+### 3.3. Admin Panel
+- Duyệt công thức
+- Viết blog chuyên sâu
 
 ---
 
-## 4. Tính năng Website
+## 🛠️ 4. Gợi ý kỹ thuật Backend
 
-Website đóng vai trò SEO, giới thiệu App, cộng đồng mở rộng.
-
-- Người dùng Google search → vào bài công thức
-- CTA Tải App nằm xen kẽ nội dung
-- Người dùng có thể đăng ký, lưu món, tham gia cộng đồng
-
----
-
-## 5. Quản trị & Nội dung
-
-### 5.1 Admin
-- Duyệt công thức người dùng gửi lên
-- Từ chối có lý do rõ ràng
-- Theo dõi chỉ số hệ thống
-
-### 5.2 Chuyên gia (Content Editor)
-- Viết bài Blog, mẹo nấu ăn
-- Đăng bài xu hướng: “Eat Clean mùa hè”, “Low Carb tối giản”
+| Module         | Gợi ý công nghệ               | Ghi chú                                 |
+|----------------|-------------------------------|------------------------------------------|
+| Auth           | JWT / OAuth2                  | Middleware phân quyền                    |
+| Recipe Search  | PostgreSQL + fulltext / Typesense | Ưu tiên Typesense cho UX tốt          |
+| Rewards        | rewards + reward_logs         | Cộng/trừ điểm theo hành vi              |
+| Scan           | AI backend riêng (Flask/FastAPI) | Dùng REST API hoặc WebSocket           |
+| Community      | posts, comments, likes        | Cần kiểm duyệt nội dung                 |
+| Premium        | subscriptions + webhook       | Tích hợp Stripe / App Store / GPlay     |
 
 ---
 
-## 6. Lộ trình phát triển (Roadmap)
+## 🚦 5. Lộ trình MVP
 
-| Giai đoạn | Mục tiêu                    | Tính năng tiêu biểu                       |
-|-----------|-----------------------------|-------------------------------------------|
-| MVP       | Scan → Gợi ý món → Xem món | Đăng nhập, Scan, xem chi tiết, lưu món    |
-| Giai đoạn 2 | Tăng tương tác             | Cộng đồng, điểm thưởng, bình luận         |
-| Giai đoạn 3 | Cá nhân hóa dinh dưỡng     | Kế hoạch ăn uống AI, cảnh báo dị ứng      |
-
----
-
-## 7. Phân loại tính năng theo giai đoạn
-
-| Tính năng                        | Ưu tiên | Nền tảng | Giai đoạn     |
-|----------------------------------|---------|----------|----------------|
-| Scan ảnh                        | 🔥      | App      | MVP            |
-| Gợi ý món ăn từ nguyên liệu     | 🔥      | App      | MVP            |
-| Lưu công thức yêu thích         | ✅      | App      | MVP            |
-| Cộng đồng (post, comment)       | ⚠       | App/Web  | Giai đoạn 2    |
-| Điểm thưởng 💎                  | ⚠       | App/Web  | Giai đoạn 2    |
-| Gợi ý AI theo thể trạng         | ❌      | App      | Giai đoạn 3    |
+| Giai đoạn     | Mục tiêu                       | Thành phần chính                       |
+|---------------|-------------------------------|----------------------------------------|
+| Giai đoạn 1   | MVP core                      | Auth, Công thức, Tìm kiếm, Trang chủ   |
+| Giai đoạn 2   | Tăng tương tác                | Scan, Rewards, Cộng đồng               |
+| Giai đoạn 3   | Monetize                      | Premium, AI plan, thanh toán           |
+| Giai đoạn 4   | SEO & Web cộng đồng           | Website recipe, blog, admin panel      |
 
 ---
 
-## 8. Thuật ngữ (Glossary)
+## 📌 Kết luận
 
-| Thuật ngữ      | Giải thích |
-|----------------|------------|
-| USP            | Unique Selling Point – Điểm độc đáo cạnh tranh |
-| Guest Mode     | Người dùng chưa đăng nhập |
-| CTA            | Call to Action – Nút kêu gọi hành động |
-| 💎 Point       | Hệ thống điểm thưởng trong ứng dụng |
+- Nên tổ chức code backend theo module: `recipes`, `users`, `rewards`, `posts`, `premium`, `ai_scan`
+- Ưu tiên bảo trì dễ dàng, API rõ ràng, hỗ trợ tăng trưởng và phân quyền theo vai trò người dùng.
 
----
-
-## 9. Phụ lục
-
-- Sitemap App: Home → Search → Scan → Community → Profile
-- Prompt GPT-4o cho tính năng Scan ảnh nguyên liệu
-- Mẫu UI/UX gợi ý nếu có
